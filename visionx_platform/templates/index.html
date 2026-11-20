@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111b">
+  <title>VisionX — Intelligent Vision Platform</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="VisionX home">
+        <span class="brand-mark"><span></span><span></span><span></span><span></span></span>
+        <span class="brand-name">VISION<span>X</span><small>INTELLIGENT VISION</small></span>
+      </a>
+      <div class="topbar-center"><span class="live-dot"></span><span>COMPUTER VISION WORKSPACE</span></div>
+      <div class="topbar-right"><span class="system-pill"><i></i><b id="topStatus">SYSTEM IDLE</b></span><span class="version">LOCAL BUILD 01</span></div>
+    </header>
+
+    <main class="dashboard">
+      <section class="page-heading">
+        <div><p class="eyebrow">REAL-TIME INTELLIGENCE / OVERVIEW</p><h1>Vision <span>Dashboard</span></h1><p class="subheading">Detect, track and understand movement in your video stream.</p></div>
+        <div class="heading-actions"><span class="model-tag">MODEL <b>YOLO11n</b></span><span class="tracker-tag">TRACKER <b>BYTETRACK</b></span></div>
+      </section>
+
+      <section class="main-grid">
+        <div class="panel video-panel">
+          <div class="panel-header">
+            <div class="panel-title"><span class="title-icon camera-icon">◉</span><div><h2>Live Detection Feed</h2><p id="sourceName">No source connected</p></div></div>
+            <div class="feed-status"><span id="feedDot" class="status-dot"></span><span id="feedState">OFFLINE</span></div>
+          </div>
+          <div class="video-stage" id="videoStage">
+            <div class="feed-placeholder" id="feedPlaceholder">
+              <div class="placeholder-orbit"><div class="orbit-core">VX</div></div>
+              <h3>Awaiting video source</h3><p>Connect a camera or upload a video to start AI analysis.</p>
+              <span class="placeholder-code">VISION ENGINE / READY</span>
+            </div>
+            <img id="videoFeed" alt="Real-time object detection video feed" hidden>
+            <div class="video-overlay top-left">LIVE ANALYTICS <span>●</span></div>
+            <div class="video-overlay bottom-right" id="resolutionLabel">640 × 480 TARGET</div>
+          </div>
+          <div class="feed-controls">
+            <button class="btn btn-primary" id="cameraBtn"><span>◉</span> Start Camera</button>
+            <label class="btn btn-secondary upload-btn" for="videoFile"><span>↥</span> Upload Video</label>
+            <input type="file" id="videoFile" accept="video/mp4,video/avi,video/quicktime,video/x-matroska,video/webm,.m4v" hidden>
+            <button class="btn btn-danger" id="stopBtn" disabled><span>■</span> Stop</button>
+            <span class="control-hint" id="actionMessage">Choose a source to begin.</span>
+          </div>
+        </div>
+
+        <aside class="side-column">
+          <div class="panel status-panel">
+            <div class="panel-header compact"><div class="panel-title"><span class="title-icon pulse-icon">⌁</span><div><h2>Engine Status</h2><p>Processing monitor</p></div></div><span class="mini-live" id="engineBadge">IDLE</span></div>
+            <div class="status-readings">
+              <div><span>Processing speed</span><strong id="fpsValue">0.0 <small>FPS</small></strong></div>
+              <div><span>Inference time</span><strong id="latencyValue">— <small>ms</small></strong></div>
+            </div>
+            <div class="meter"><span id="fpsMeter"></span></div>
+            <div class="engine-foot"><span>AI MODEL</span><b>YOLO11N · COCO</b></div>
+          </div>
+
+          <div class="panel analysis-panel">
+            <div class="panel-header compact"><div class="panel-title"><span class="title-icon analysis-icon">▥</span><div><h2>Scene Analysis</h2><p>Live scene estimate</p></div></div></div>
+            <div class="analysis-row"><span>Traffic density</span><strong id="trafficValue" class="traffic-moderate">NO DATA</strong></div>
+            <div class="analysis-row"><span>Tracked objects</span><strong id="detectionsValue">0</strong></div>
+            <div class="density-track"><span id="densityFill"></span></div>
+            <div class="analysis-note"><span class="note-dot"></span><span id="analysisMessage">Start a feed to calculate scene activity.</span></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="metrics-grid">
+        <article class="metric-card people-card"><div class="metric-top"><div class="metric-icon">♟</div><span class="metric-label">PEOPLE DETECTED</span><span class="metric-indicator">LIVE</span></div><div class="metric-value" id="peopleValue">0</div><div class="metric-bottom"><span>Visible in current frame</span><b id="peopleUnique">0 unique IDs</b></div><div class="metric-bar"><span></span></div></article>
+        <article class="metric-card vehicle-card"><div class="metric-top"><div class="metric-icon">▰</div><span class="metric-label">VEHICLES DETECTED</span><span class="metric-indicator">LIVE</span></div><div class="metric-value" id="vehiclesValue">0</div><div class="metric-bottom"><span>Cars, buses & trucks</span><b id="vehiclesUnique">0 unique IDs</b></div><div class="metric-bar"><span></span></div></article>
+        <article class="metric-card bicycle-card"><div class="metric-top"><div class="metric-icon">⌁</div><span class="metric-label">BICYCLES DETECTED</span><span class="metric-indicator">LIVE</span></div><div class="metric-value" id="bicyclesValue">0</div><div class="metric-bottom"><span>Visible in current frame</span><b id="bicyclesUnique">0 unique IDs</b></div><div class="metric-bar"><span></span></div></article>
+        <article class="metric-card total-card"><div class="metric-top"><div class="metric-icon">◎</div><span class="metric-label">TOTAL DETECTIONS</span><span class="metric-indicator">LIVE</span></div><div class="metric-value" id="totalValue">0</div><div class="metric-bottom"><span>Current frame objects</span><b>All target classes</b></div><div class="metric-bar"><span></span></div></article>
+      </section>
+
+      <section class="lower-grid">
+        <div class="panel chart-panel">
+          <div class="panel-header"><div class="panel-title"><span class="title-icon chart-icon">⌁</span><div><h2>Object Activity</h2><p>Visible detections over time</p></div></div><span class="chart-period">RECENT 60 SEC</span></div>
+          <div class="chart-wrap"><canvas id="activityChart" aria-label="Object activity chart"></canvas><div class="chart-empty" id="chartEmpty">Activity will appear here when processing starts.</div></div>
+          <div class="chart-legend"><span><i class="legend-person"></i> People</span><span><i class="legend-vehicle"></i> Vehicles</span><span><i class="legend-bicycle"></i> Bicycles</span></div>
+        </div>
+        <div class="panel tracking-panel">
+          <div class="panel-header"><div class="panel-title"><span class="title-icon target-icon">⊕</span><div><h2>Tracking Summary</h2><p>Unique track IDs this session</p></div></div></div>
+          <div class="tracking-list">
+            <div class="tracking-item"><span class="tracking-symbol people-symbol">♟</span><div class="tracking-info"><b>People</b><small>Unique tracked identities</small></div><strong id="trackPeople">0</strong></div>
+            <div class="tracking-item"><span class="tracking-symbol vehicle-symbol">▰</span><div class="tracking-info"><b>Vehicles</b><small>Unique tracked identities</small></div><strong id="trackVehicles">0</strong></div>
+            <div class="tracking-item"><span class="tracking-symbol bicycle-symbol">⌁</span><div class="tracking-info"><b>Bicycles</b><small>Unique tracked identities</small></div><strong id="trackBicycles">0</strong></div>
+          </div>
+          <div class="tracking-foot"><span class="tracking-pulse"></span> Tracking engine <b id="trackingState">Standby</b></div>
+        </div>
+      </section>
+      <footer class="footer"><span>VISIONX <b>INTELLIGENCE SYSTEM</b></span><span>LOCAL PROCESSING · VIDEO IS NOT UPLOADED TO A CLOUD SERVICE</span><span>BUILD 01.0</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
